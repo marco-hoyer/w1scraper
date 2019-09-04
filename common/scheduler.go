@@ -15,7 +15,7 @@ type Schedule struct {
 
 func (s *Schedule) Init() {
 	s.scheduler = gocron.NewScheduler()
-	s.scheduler.Every(3).Seconds().Do(scrapeThermalHeatingSensors)
+	s.scheduler.Every(30).Seconds().Do(scrapeThermalHeatingSensors)
 
 	<-s.scheduler.Start()
 }
@@ -25,6 +25,12 @@ func (s *Schedule) Stop() {
 }
 
 func scrapeThermalHeatingSensors() {
+	defer func() {
+		if x := recover(); x != nil {
+			fmt.Println("Error occured: ", x)
+		}
+	}()
+
 	log.Printf("scraping 1w sensors for thermal heating")
 	i := Influxdb{}
 	i.Connect()
