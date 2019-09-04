@@ -10,10 +10,19 @@ import (
 
 const (
 	url      = "http://127.0.0.1:8086"
-	database = "w1"
+	database = "sole"
 	username = "root"
 	password = "root"
 )
+
+type DataPoint struct {
+	name       string
+	location   string
+	identifier string
+	sensorType string
+	unit       string
+	value      float64
+}
 
 type Influxdb struct {
 	client client.Client
@@ -54,7 +63,7 @@ func (i *Influxdb) queryDB(cmd string) (res []client.Result, err error) {
 	return res, nil
 }
 
-func (i *Influxdb) Send(name string, room string, unit string, identifier string, value float64) {
+func (i *Influxdb) Send(dataPoints []DataPoint) {
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
 		Database:  database,
 		Precision: "s",
@@ -62,20 +71,23 @@ func (i *Influxdb) Send(name string, room string, unit string, identifier string
 	if err != nil {
 		log.Fatal(err)
 	}
-	// Create a point and add to batch
-	tags := map[string]string{
-		"room":       room,
-		"identifier": identifier,
-		"unit":       unit,
-	}
 
-	fields := map[string]interface{}{"value": value,}
+	for _, p := range dataPoints {
+		// Create a point and add to batch
+		tags := map[string]string{
+			"location":   p.location,
+			"identifier": p.identifier,
+			"unit":       p.unit,
+		}
 
-	pt, err := client.NewPoint(name, tags, fields, time.Now())
-	if err != nil {
-		fmt.Println(err)
+		fields := map[string]interface{}{"value": p.value,}
+
+		pt, err := client.NewPoint(p.name, tags, fields, time.Now())
+		if err != nil {
+			fmt.Println(err)
+		}
+		bp.AddPoint(pt)
 	}
-	bp.AddPoint(pt)
 
 	// Write the batch
 	if err := i.client.Write(bp); err != nil {
@@ -87,4 +99,3 @@ func (i *Influxdb) Send(name string, room string, unit string, identifier string
 		log.Fatal(err)
 	}
 }
-

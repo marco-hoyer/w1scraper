@@ -2,20 +2,31 @@
 
 
 [[projects]]
+  digest = "1:a3ba6267e9c3fc67c7ef01e48c0732bd337bfea16057de982806ded67e985152"
   name = "github.com/influxdata/influxdb"
-  packages = ["client/v2","models","pkg/escape"]
+  packages = [
+    "client/v2",
+    "models",
+    "pkg/escape",
+  ]
+  pruneopts = ""
   revision = "f8fdf652f348fc9980997fe1c972e2b79ddd13b0"
   version = "v1.7.7"
 
 [[projects]]
   branch = "master"
+  digest = "1:a8c590cf5c0b481efe573a0df4fc606de1e029c3115b2f2887a0f840e1d7f2e9"
   name = "github.com/jasonlvhit/gocron"
   packages = ["."]
+  pruneopts = ""
   revision = "7ef3bafdc25c3ba768c70cf058acc83bb1535ab2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cb48d320241aabef1c10ed2c56aa3ea62a3396976d3d7dc42d6e4028cee1086c"
+  input-imports = [
+    "github.com/influxdata/influxdb/client/v2",
+    "github.com/jasonlvhit/gocron",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
