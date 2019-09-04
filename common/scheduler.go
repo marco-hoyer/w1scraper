@@ -50,7 +50,6 @@ func scrapeThermalHeatingSensors() {
 	deltaValuePoint := DataPoint{value: deltaValue, name: "delta_temperature", identifier: "SoleDelta", sensorType: "temperatureSensor", unit: "Degrees Celsius", location: "Sole"}
 
 	points = append(points, deltaValuePoint)
-	fmt.Println(points)
 	i.Send(points)
 }
 
